@@ -7,7 +7,6 @@ const utilisateurController = require("../controllers/utilisateur.controller");
 const { Utilisateur } = require("../models/utilisateur.model");
 
 router.get("/all",utilisateurController.index)
-router.get("/get",utilisateurController.get)
 router.get('/show',utilisateurController.show)
 router.post("/add",utilisateurController.add)
 router.put("/update/:id",utilisateurController.update)
@@ -16,6 +15,7 @@ router.post('/signup',utilisateurController.signup)
 router.post('/signin',utilisateurController.signin)
 router.post('/emailcheck',utilisateurController.emailcheck)
 router.post("/getarts",utilisateurController.getarts)
+router.get("/affich",utilisateurController.affich)
 
 
 

@@ -4,12 +4,7 @@ const { Utilisateur } = require("../models/utilisateur.model");
 
 //afficher
 //mrigl 
-const gets=(req, res, next) => 
-{
-    Utilisateur.find()
-    .then((utilisateur) =>{res.json({utilisateur})})
-    .catch(error=>{res.json({error})})      
-}
+
 
 
 const index=(req, res, next) => 
@@ -34,7 +29,12 @@ const index=(req, res, next) =>
     })
     .catch(error=>{res.json({error})})      
 }
-
+const affich=(req, res, next) => 
+{
+    Utilisateur.find()
+    .then((utilisateur) =>{res.json({utilisateur})})
+    .catch(error=>{res.json({error})})      
+}
 
 const show = (req, res, next) => {
     req= Utilisateur.findOne({ active: true })
@@ -297,7 +297,7 @@ const signin=(req,res)=>{
 
 
 module.exports={
-    index,gets,show,add,update,destroy,signin,signup,emailcheck,getarts
+    index,affich,show,add,update,destroy,signin,signup,emailcheck,getarts
 
 }
 
