@@ -4,7 +4,7 @@ const { Utilisateur } = require("../models/utilisateur.model");
 
 //afficher
 //mrigl 
-const get=(req, res, next) => 
+const gets=(req, res, next) => 
 {
     Utilisateur.find()
     .then((utilisateur) =>{res.json({utilisateur})})
@@ -297,7 +297,7 @@ const signin=(req,res)=>{
 
 
 module.exports={
-    index,get,show,add,update,destroy,signin,signup,emailcheck,getarts
+    index,gets,show,add,update,destroy,signin,signup,emailcheck,getarts
 
 }
 
