@@ -3,6 +3,14 @@ const { Art } = require("../models/art.model");
 const { Utilisateur } = require("../models/utilisateur.model");
 
 //afficher
+//mrigl 
+const get=(req, res, next) => 
+{
+    Utilisateur.find()
+    .then((utilisateur) =>{res.json({utilisateur})})
+    .catch(error=>{res.json({error})})      
+}
+
 
 const index=(req, res, next) => 
 {
@@ -110,8 +118,8 @@ const add = (req, res, next) => {
             datenaissance:req.body.datenaissance,
             adresse:req.body.adresse,
             role:req.body.role,
-            image: req.body.image,
-            active: req.body.active
+            image:req.body.image,
+            active:req.body.active
 
         });
     
@@ -145,8 +153,8 @@ const update =(req, res, next)=>
             datenaissance:req.body.datenaissance,
             adresse:req.body.adresse,
             role:req.body.role,
-            image: req.body.image,
-            active: req.body.active
+            image:req.body.image,
+            active:req.body.active
 
 
     }
@@ -201,7 +209,7 @@ const signup=(req,res)=>{
                     adresse:req.body.adresse,
                     role:req.body.role,
                     image:req.body.image,
-                    active: req.body.active
+                    active:req.body.active
 
                 })
                 utilisateur.save()
@@ -289,7 +297,7 @@ const signin=(req,res)=>{
 
 
 module.exports={
-    index,show,add,update,destroy,signin,signup,emailcheck,getarts
+    index,get,show,add,update,destroy,signin,signup,emailcheck,getarts
 
 }
 
