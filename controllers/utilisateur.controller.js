@@ -28,7 +28,20 @@ const index=(req, res, next) =>
 }
 
 
-
+const show = (req, res, next) => {
+    req= Utilisateur.findOne({ active: true })
+     .then((reponse) => {
+         res.json({
+           reponse,
+         }),
+           console.log("azerty", reponse);
+       })
+       .catch((error) => { 
+         res.json({
+           message: "an error Occured",
+         });
+       });
+   };
 
 ///////////////
 
@@ -97,8 +110,9 @@ const add = (req, res, next) => {
             datenaissance:req.body.datenaissance,
             adresse:req.body.adresse,
             role:req.body.role,
-            image: req.body.image
-    
+            image: req.body.image,
+            active: req.body.active
+
         });
     
             
@@ -131,7 +145,10 @@ const update =(req, res, next)=>
             datenaissance:req.body.datenaissance,
             adresse:req.body.adresse,
             role:req.body.role,
-            image: req.body.image
+            image: req.body.image,
+            active: req.body.active
+
+
     }
     Utilisateur.findByIdAndUpdate(id, {$set:updateData})
     .then(()=>{
@@ -183,7 +200,9 @@ const signup=(req,res)=>{
                     datenaissance:req.body.datenaissance,
                     adresse:req.body.adresse,
                     role:req.body.role,
-                    image:req.body.image
+                    image:req.body.image,
+                    active: req.body.active
+
                 })
                 utilisateur.save()
                 .then((err)=>{
@@ -270,7 +289,7 @@ const signin=(req,res)=>{
 
 
 module.exports={
-    index,add,update,destroy,signin,signup,emailcheck,getarts
+    index,show,add,update,destroy,signin,signup,emailcheck,getarts
 
 }
 

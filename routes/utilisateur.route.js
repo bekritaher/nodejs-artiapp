@@ -7,6 +7,7 @@ const utilisateurController = require("../controllers/utilisateur.controller");
 const { Utilisateur } = require("../models/utilisateur.model");
 
 router.get("/all",utilisateurController.index)
+router.get('/show',utilisateurController.show)
 router.post("/add",utilisateurController.add)
 router.put("/update/:id",utilisateurController.update)
 router.delete("/delete/:id",utilisateurController.destroy)

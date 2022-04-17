@@ -11,21 +11,20 @@ const index=(req, res, next) =>
 
 
 //mrigl 
-const show = (req, res, next) => {
-    let BadgeID = req.body.BadgeID
-    Badge.findById(BadgeID)
-    .then(reponse => {
-        res.json({
-            response
-        })
-    })
-    .catch(error => {
-        res.json({
-            message:'an error Occured'
-        })
-    })
-}
-
+/*const show = (req, res, next) => {
+        req= Badge.findOne({ active: true })
+         .then((reponse) => {
+             res.json({
+               reponse,
+             }),
+               console.log("azerty", reponse);
+           })
+           .catch((error) => { 
+             res.json({
+               message: "an error Occured",
+             });
+           });
+       };*/
 
 //mrigl 
 const stores = (req, res, next) => {
@@ -62,20 +61,23 @@ const stores = (req, res, next) => {
 //mrigll
 const update =(req, res, next)=>
 {
-    let BadgeID=req.body.BadgeID
+    let id = req.params.id;
+
     let updateData={
         nom:req.body.nom,
         email:req.body.email,
         adresse:req.body.adresse,
         image:req.body.image,
+
     }
-    Badge.findByIdAndUpdate(BadgeID, {$set:updateData})
+    Badge.findByIdAndUpdate(id, {$set:updateData})
     .then(()=>{
         res.json( {
             message:'Badge updated successfully!'
         })
     })
 .catch(error =>{
+    res.statusCode = 500;
     res.json({
         message:'an error Occured!'
     })
@@ -85,8 +87,8 @@ const update =(req, res, next)=>
 
 //mrigll
 const destory=(req,res,next) =>{
-    let BadgeID= req.body.BadgeID
-    Badge.findByIdAndRemove(BadgeID)
+    let _id = req.params.id;
+    Badge.findByIdAndDelete(_id)
     .then(()=>{
         req.json({
             message: 'Delete sucesse!'
@@ -100,5 +102,5 @@ const destory=(req,res,next) =>{
 }
 
 module.exports={
-    index,show,stores,update,destory
+    index,stores,update,destory
 }

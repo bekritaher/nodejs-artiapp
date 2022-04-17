@@ -15,6 +15,9 @@ const badgeSchema = new Schema({
     image: {
         type: String,
     },
+    active: {
+        type: Boolean,
+    },
 }, { timestamps: true});
 
 const Badge = mongoose.model('Badge', badgeSchema);

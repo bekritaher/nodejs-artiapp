@@ -17,7 +17,9 @@ const utilisateurSchema = mongoose.Schema(
                 ref: "Art"
             }
           ],
-
+        active: {
+            type: Boolean,
+        },
     }
 );
 
