@@ -17,66 +17,69 @@ const ShowallCarts = (req, res, next) => {
 //mrigl
 const AddToCart = async (req, res, next) => {
   var verifUser = req.body.userId;
-  Panier.findOne({ $or: [{ artId: verifUser }] }).then((pan) => {
-    if (pan) {
-      console.log("panier existe!");
+  Panier.findOne({ $or: [{ artId: verifUser, paymentResponse: "No" }] }).then(
+    (pan) => {
+      if (pan) {
+        console.log("panier existe!");
 
-      var verifArt = req.body.artId;
-      Panier.findOne({ "arts.artId": verifArt }).then((pannn) => {
-        if (pannn) {
-          Panier.updateOne(
-            { "arts.artId": req.body.artId },
-            { $inc: { "arts.$.quantity": 1 } },
-            { upsert: true, new: true },
-            function (err, model) {
-              console.log(err);
-            }
-          );
-        } else {
-          //User Mawjoud +Add inside Array
-          Panier.findOneAndUpdate(
-            { userId: req.body.userId },
-            { $push: { arts: req.body } },
-            { upsert: true, new: true },
-            function (err, model) {
-              console.log(err);
-            }
-          );
-        }
-      });
-
-      ///
-    } else {
-      console.log("panier Doesn't existe!");
-      //Mech mawjoud add inside New Array
-      let pan = new Panier({
-        userId: req.body.userId,
-        artId: req.body.artId,
-      });
-      pan.arts.push(req.body);
-      pan
-        .save()
-        .then((pan) => {
-          res.status(200).send(
-            JSON.stringify({
-              message: "pan Added Successfully!",
-            })
-          );
-        })
-        .catch((error) => {
-          res.json({
-            message: "An error occured when adding pan!",
-          });
+        var verifArt = req.body.artId;
+        Panier.findOne({ "arts.artId": verifArt }).then((pannn) => {
+          if (pannn) {
+            Panier.updateOne(
+              { "arts.artId": req.body.artId, paymentResponse: "No" },
+              { $inc: { "arts.$.quantity": 1 } },
+              { upsert: true, new: true },
+              function (err, model) {
+                console.log(err);
+              }
+            );
+          } else {
+            //User Mawjoud +Add inside Array
+            Panier.findOneAndUpdate(
+              { userId: req.body.userId },
+              { $push: { arts: req.body } },
+              { upsert: true, new: true },
+              function (err, model) {
+                console.log(err);
+              }
+            );
+          }
         });
-    } //end else
-  }); //end then
+
+        ///
+      } else {
+        console.log("panier Doesn't existe!");
+        //Mech mawjoud add inside New Array
+        let pan = new Panier({
+          userId: req.body.userId,
+          artId: req.body.artId,
+          paymentResponse: req.body.paymentResponse,
+        });
+        pan.arts.push(req.body);
+        pan
+          .save()
+          .then((pan) => {
+            res.status(200).send(
+              JSON.stringify({
+                message: "pan Added Successfully!",
+              })
+            );
+          })
+          .catch((error) => {
+            res.json({
+              message: "An error occured when adding pan!",
+            });
+          });
+      } //end else
+    }
+  ); //end then
 };
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 //mrigl
 const GetCartsbyUserid = (req, res, next) => {
-  Panier.find({ userId: req.body.userId })
+  Panier.find({ userId: req.body.userId, paymentResponse: "No" })
     .select("-_id -__v -userId ")
     .then((carts) => {
       res.json(carts[0]);
@@ -88,7 +91,7 @@ const GetCartsbyUserid = (req, res, next) => {
 ////////////////////////////////////////////////////////
 //mrigll
 const DeleteItemFromCart = async (req, res, next) => {
-  Panier.find({ userId: req.body.userId })
+  Panier.find({ userId: req.body.userId, paymentResponse: "No" })
     .select("-_id -__v -userId")
     .then((carts) => {
       //console.log(carts[0].arts);
@@ -115,7 +118,10 @@ const DeleteItemFromCart = async (req, res, next) => {
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
 const totalPrice = async (req, res, next) => {
-  const panier = await Panier.find({ userId: req.body.userId });
+  const panier = await Panier.find({
+    userId: req.body.userId,
+    paymentResponse: "No",
+  });
   let total = 0;
   if (panier.length > 0) {
     for (let i = 0; i < panier[0].arts.length; i++) {
@@ -141,7 +147,7 @@ const getArtDetails = async (req, res, next) => {
 ////////////////////////////////////////////////////////
 incrementQuantity = async (req, res, next) => {
   Panier.updateOne(
-    { "arts.artId": req.body.artId },
+    { "arts.artId": req.body.artId, paymentResponse: "No" },
     { $inc: { "arts.$.quantity": 1 } },
     { upsert: true, new: true },
     function (err, model) {
@@ -154,13 +160,56 @@ incrementQuantity = async (req, res, next) => {
 ////////////////////////////////////////////////////////
 decrementQuantity = async (req, res, next) => {
   Panier.updateOne(
-    { "arts.artId": req.body.artId },
+    { "arts.artId": req.body.artId, paymentResponse: "No" },
     { $inc: { "arts.$.quantity": -1 } },
     { upsert: true, new: true },
     function (err, model) {
       console.log(err);
     }
   );
+};
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+getidCart = async (req, res, next) => {
+  Panier.find({ userId: req.body.userId, paymentResponse: "No" })
+    .select()
+    .then((carts) => {
+      if (carts.length > 0) {
+        res.status(200).send(carts[0]._id.toString());
+      }
+      if (carts.length == 0) {
+        //res.status(200).send("0");
+        console.log("THERE IS NO CART !");
+      }
+    })
+    .catch((err) => console.log(err));
+};
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+SetCartPayed = async (req, res, next) => {
+  // chenzydeha Check ...
+  Panier.findOneAndUpdate(
+    { _id: req.body.idCart },
+    { $set: { paymentResponse: "Yes" } },
+    { upsert: true, new: true },
+    function (err, model) {
+      console.log(err);
+    }
+  );
+};
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+DeleteAllCart = async (req, res, next) => {
+  Panier.deleteMany({ userId: req.body.userId }, function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully deleted all Items!");
+    }
+  });
 };
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
@@ -174,4 +223,7 @@ module.exports = {
   getArtDetails,
   incrementQuantity,
   decrementQuantity,
+  getidCart,
+  SetCartPayed,
+  DeleteAllCart,
 };
